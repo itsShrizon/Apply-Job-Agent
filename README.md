@@ -38,7 +38,7 @@ Apply Job Agent is a comprehensive platform that combines AI technology with job
 - **AI Integration**: LangChain + OpenAI models for resume parsing and job matching
 - **Document Processing**: LaTeX + PDF generation tools
 - **Containerization**: Docker + Docker Compose
-- **Custom JobSpy**: Utilizes a custom version of the JobSpy library modified by Tanzir Hossain (https://github.com/itsShrizon/JobSpy)
+- **Custom JobSpy**: Utilizes a custom version of the JobSpy library modified by me (https://github.com/itsShrizon/JobSpy)
 
 ### Frontend
 - **Framework**: React with Vite build tool

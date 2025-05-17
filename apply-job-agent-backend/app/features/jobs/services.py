@@ -42,7 +42,7 @@ class JobService:
     def get_jobs(input: JobSearchInput):
         try:
             jobs = scrape_jobs(
-                    site_name=["indeed", "linkedin"],
+                    site_name=["linkedin"],
                     search_term=input.job_title,
                     location=input.location,
                     results_wanted=7,

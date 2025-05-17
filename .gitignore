@@ -1,8 +1,87 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿# Python Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pythonenv*
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
 
-/apply-job-agent-backend/.vs/apply-job-agent-backend/FileContentIndex
-/apply-job-agent-backend/.vs/apply-job-agent-backend/v17
-/apply-job-agent-backend/.vs/slnx.sqlite
-/apply-job-agent-backend/.vs/VSWorkspaceState.json
+# Database
+*.sqlite3
+*.db
+
+# FastAPI / Alembic
+alembic/*.ini
+!alembic/alembic.ini
+alembic/versions/*.pyc
+
+# Node / React Frontend
+node_modules/
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+dist-ssr/
+coverage/
+*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor directories and files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+**/output/latex/*
+**/output/*.pdf
+**/output/*.tex
+
+# Dependencies lock files (optional - uncomment if you want to ignore)
+# package-lock.json
+# yarn.lock
+# poetry.lock
+
+# Docker
+.dockerignore
+
+# Custom JobSpy fork
+custom-jobspy/JobSpy/build/
+custom-jobspy/JobSpy/dist/
+custom-jobspy/JobSpy/*.egg-info/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+logs/

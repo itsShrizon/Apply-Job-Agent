@@ -6,6 +6,8 @@ WORKDIR /app
 
 # Install TeX Live with required packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    texlive-font-utils\
+    texlive-fonts-extra\
     texlive-latex-base \
     texlive-latex-recommended \
     texlive-latex-extra \
@@ -18,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first to leverage Docker layer caching
+COPY ./custom-jobspy/JobSpy ./custom-jobspy/JobSpy
 COPY ./requirements.txt /app/requirements.txt
 
 RUN pip install --upgrade --progress-bar off pip

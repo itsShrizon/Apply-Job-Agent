@@ -16,6 +16,7 @@ import uvicorn
 # Application imports
 from app.core.config import settings
 from app.features.resume.routers import router as resume_router
+from app.features.cover_letter.routers import router as cover_letter_router
 from app.features.jobs.routers import router as jobs_router
 from app.features.auth.routers import router as auth_router
 from dotenv import load_dotenv
@@ -86,6 +87,7 @@ def create_application() -> FastAPI:
     
     # Include routers from different features
     application.include_router(resume_router)
+    application.include_router(cover_letter_router)
     application.include_router(jobs_router)
     application.include_router(auth_router)
     

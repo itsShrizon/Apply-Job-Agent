@@ -39,61 +39,63 @@ export const CustomResumeProvider = ({ children }) => {
     };
   }, [generatedCV]);
 
-  // Function to request CV generation from backend
-  const generateCV = async (job_description) => {
-    const token = currentUser?.access_token;
+// Function to request CV generation from backend
+const generateCV = async (job_description) => {
+  const token = currentUser?.access_token;
+  
+  if (!token) {
+    setError('Authentication required');
+    throw new Error('Authentication required');
+  }
+  
+  try {
+    setIsGenerating(true);
+    setError(null);
+    const jobD = encodeURIComponent(job_description || '');
     
-    if (!token) {
-      setError('Authentication required');
-      throw new Error('Authentication required');
+    // Request the PDF as JSON with hex-encoded data
+    const response = await axios({
+      method: 'GET',
+      url: `${BACKEND_URL}/resume/build-custom-resume?job_description=${jobD}`,
+      headers: {
+        'accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      responseType: 'json',
+    });
+    
+    // Get the hex string from the response
+    const hexString = response.data.pdf;
+    
+    if (!hexString) {
+      throw new Error("PDF data not found in response");
     }
     
-    try {
-      setIsGenerating(true);
-      setError(null);
-      const jobD = encodeURIComponent(job_description || '');
-      
-      // Updated to handle JSON response with hex-encoded PDF
-      const response = await axios({
-        method: 'GET',
-        url: `${BACKEND_URL}/resume/build-custom-resume?job_description=${jobD}`,
-        headers: {
-          'accept': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        responseType: 'json', // Changed from 'blob' to 'json'
-      });
-      
-      // Convert hex string to array buffer
-      const hexString = response.data.pdf;
-      const bytes = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-      
-      // Create blob from the bytes
-      const pdfBlob = new Blob([bytes], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      
-      const cvData = {
-        pdfUrl,
-        blob: pdfBlob,
-        fileName: 'custom_resume.pdf',
-        contentType: 'application/pdf',
-        size: pdfBlob.size || 0
-      };
-      
-      setGeneratedCV(cvData);
-      return cvData;
-      const data = await response.data;
-      console.log(data)
-      setGeneratedCV(data);
-      return data;
-    } catch (err) {
-      console.error('Error generating CV:', err);
-      setError(err.message || 'Failed to generate CV');
-      throw err;
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+    // Convert hex string to array buffer
+    const bytes = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    
+    // Create blob from the bytes
+    const pdfBlob = new Blob([bytes], { type: 'application/pdf' });
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    
+    const cvData = {
+      pdfUrl,
+      blob: pdfBlob,
+      fileName: 'custom_resume.pdf',
+      contentType: 'application/pdf',
+      size: pdfBlob.size || 0
+    };
+    
+    setGeneratedCV(cvData);
+    return cvData;
+  } catch (err) {
+    console.error('Error generating CV:', err);
+    setError(err.message || 'Failed to generate CV');
+    throw err;
+  } finally {
+    setIsGenerating(false);
+  }
+};
   
   // Function to download the generated CV
   const downloadGeneratedCV = useCallback(() => {

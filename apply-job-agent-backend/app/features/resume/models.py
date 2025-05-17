@@ -18,3 +18,5 @@ class Resume(Base):
     
     # Relationship with User model (assuming you have one)
     user = relationship("User", back_populates="resumes")
+    # Relationship with CoverLetter model
+    cover_letters = relationship("CoverLetter", back_populates="resume")

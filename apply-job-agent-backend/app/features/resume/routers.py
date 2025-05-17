@@ -140,4 +140,3 @@ async def build_custom_resume(
         raise HTTPException(
             status_code=500, detail=f"Failed to generate LaTeX code: {str(e)}"
         )
-

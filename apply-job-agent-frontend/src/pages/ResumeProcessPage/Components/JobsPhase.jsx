@@ -138,7 +138,7 @@ const JobsPhase = ({
               Apply Now
             </a>
             <button
-              onClick={() => openModal(<CVTemplateSelection job_description={job?.description} />)}
+              onClick={() => openModal(<CVTemplateSelection job_description={job?.description}  job_title={job?.title} company_name={job?.company}/>)}
               className="py-2 px-3 bg-[#F46036] text-white font-medium text-xs rounded-lg hover:bg-[#FF6B6B] transition shadow-sm flex items-center justify-center flex-1"
             >
               <svg
@@ -401,7 +401,7 @@ const JobsPhase = ({
                     </div>
                     <div className="mt-4 flex space-x-2">
                         <a href={selectedJob?.url || '#'} target="_blank" rel="noopener noreferrer" className="w-8/12 py-2 px-4 bg-[#FF6B6B] text-white text-sm font-semibold rounded-lg hover:bg-[#F46036] transition duration-300 ease-in-out transform hover:-translate-y-0.5 hover:shadow-lg text-center flex items-center justify-center">Apply Now</a>
-                        <button onClick={() => openModal(<CVTemplateSelection job_description={selectedJob?.description} />)} className="w-full py-2 px-3 bg-[#F46036] text-white font-semibold text-sm rounded-lg hover:bg-[#FF6B6B] transition duration-300 ease-in-out transform hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center space-x-2">
+                        <button onClick={() => openModal(<CVTemplateSelection job_description={selectedJob?.description} position_title={selectedJob?.title} company_name={selectedJob?.company} />)} className="w-full py-2 px-3 bg-[#F46036] text-white font-semibold text-sm rounded-lg hover:bg-[#FF6B6B] transition duration-300 ease-in-out transform hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center space-x-2">
                             <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>

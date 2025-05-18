@@ -13,6 +13,7 @@
     "@react-spring/web": "^10.0.0",
     "@tailwindcss/postcss": "^4.1.2",
     "axios": "^1.8.4",
+    "pdf-lib": "^1.17.1",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

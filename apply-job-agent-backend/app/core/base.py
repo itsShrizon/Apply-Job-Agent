@@ -8,4 +8,3 @@ class Base(DeclarativeBase):
 # Import models here so they are registered with Base:
 from app.features.auth.models import *
 from app.features.resume.models import *
-from app.features.cover_letter.models import *

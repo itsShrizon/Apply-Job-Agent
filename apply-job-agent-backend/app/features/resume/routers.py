@@ -1,14 +1,26 @@
 import os
-from fastapi import APIRouter, UploadFile, Depends, BackgroundTasks
+from fastapi import APIRouter, UploadFile, Depends, BackgroundTasks, Form
 from app.core.dependencies import AuthenticatedUser, get_db
 from sqlalchemy.orm import Session
-from app.features.resume.schemas import CustomResumeRequest, ResumeParseResponse
-from app.features.resume.services import CustomResumeBuilder, ResumeService
-from fastapi.responses import JSONResponse
+from app.features.resume.schemas import (
+    CustomResumeRequest, 
+    ResumeParseResponse, 
+    CoverLetterRequest, 
+    CoverLetterResponse,
+    ResumeWithCoverLetterRequest
+)
+from app.features.resume.services import (
+    CustomResumeBuilder, 
+    ResumeService, 
+    CoverLetterService,
+    ResumeWithCoverLetterService
+)
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi import HTTPException
 import pymupdf4llm
-from fastapi.responses import FileResponse
 import shutil
+from datetime import datetime
+import base64
 
 router = APIRouter(prefix="/resume", tags=["Resume"])
 
@@ -141,3 +153,287 @@ async def build_custom_resume(
             status_code=500, detail=f"Failed to generate LaTeX code: {str(e)}"
         )
 
+@router.post(
+    "/generate-cover-letter",
+    response_model=CoverLetterResponse,
+    summary="Generate a cover letter",
+    description="Generate a cover letter based on the user's resume and a job description"
+)
+async def generate_cover_letter(
+    request: CoverLetterRequest,
+    current_user: AuthenticatedUser,
+    db: Session = Depends(get_db),
+    resume_data: ResumeParseResponse = Depends(get_resume_data)
+) -> CoverLetterResponse:
+    """
+    Generate a cover letter based on the user's resume and job details.
+    
+    Args:
+        request (CoverLetterRequest): The request containing job details
+        current_user (AuthenticatedUser): The authenticated user
+        db (Session): Database session
+        resume_data (ResumeParseResponse): The parsed resume data
+    
+    Returns:
+        CoverLetterResponse: The generated cover letter
+    """
+    try:
+        # Generate the cover letter
+        cover_letter_content = CoverLetterService.generate_cover_letter(
+            resume_data=resume_data,
+            job_description=request.job_description,
+            company_name=request.company_name,
+            position_title=request.position_title,
+            hiring_manager_name=request.hiring_manager_name,
+            additional_details=request.additional_details
+        )
+        
+        # Store the cover letter in the database
+        cover_letter = CoverLetterService.store_cover_letter_in_db(
+            cover_letter_content=cover_letter_content,
+            job_description=request.job_description,
+            current_user=current_user,
+            db=db
+        )
+        
+        # Return the cover letter data
+        return CoverLetterResponse(
+            cover_letter_id=str(cover_letter.id),
+            content=cover_letter.cover_letter_content,
+            created_at=cover_letter.created_at.isoformat()
+        )
+    
+    except Exception as e:
+        # Log the error
+        print(f"Error generating cover letter: {str(e)}")
+        # Return an error message
+        raise HTTPException(
+            status_code=500, detail=f"Failed to generate cover letter: {str(e)}"
+        )
+
+@router.get(
+    "/cover-letter/{cover_letter_id}",
+    response_model=CoverLetterResponse,
+    summary="Get a specific cover letter",
+    description="Get a specific cover letter by ID"
+)
+async def get_cover_letter(
+    cover_letter_id: str,
+    current_user: AuthenticatedUser,
+    db: Session = Depends(get_db)
+) -> CoverLetterResponse:
+    """
+    Get a specific cover letter by ID.
+    
+    Args:
+        cover_letter_id (str): The ID of the cover letter
+        current_user (AuthenticatedUser): The authenticated user
+        db (Session): Database session
+    
+    Returns:
+        CoverLetterResponse: The cover letter
+    """
+    try:
+        # Get the cover letter from the database
+        cover_letter = CoverLetterService.get_cover_letter_by_id(
+            cover_letter_id=cover_letter_id,
+            current_user=current_user,
+            db=db
+        )
+        
+        # Return the cover letter data
+        return CoverLetterResponse(
+            cover_letter_id=str(cover_letter.id),
+            content=cover_letter.cover_letter_content,
+            created_at=cover_letter.created_at.isoformat()
+        )
+    
+    except Exception as e:
+        # Log the error
+        print(f"Error getting cover letter: {str(e)}")
+        # Return an error message
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get cover letter: {str(e)}"
+        )
+
+@router.get(
+    "/download-cover-letter/{cover_letter_id}",
+    summary="Download a cover letter as PDF",
+    description="Download a specific cover letter as a PDF"
+)
+async def download_cover_letter(
+    cover_letter_id: str,
+    background_tasks: BackgroundTasks,
+    current_user: AuthenticatedUser,
+    db: Session = Depends(get_db)
+):
+    """
+    Download a specific cover letter as a PDF.
+    
+    Args:
+        cover_letter_id (str): The ID of the cover letter
+        background_tasks (BackgroundTasks): Background tasks for file cleanup
+        current_user (AuthenticatedUser): The authenticated user
+        db (Session): Database session
+    
+    Returns:
+        FileResponse: The cover letter PDF file
+    """
+    try:
+        # Get the cover letter from the database
+        cover_letter = CoverLetterService.get_cover_letter_by_id(
+            cover_letter_id=cover_letter_id,
+            current_user=current_user,
+            db=db
+        )
+        
+        # Format the cover letter for PDF
+        result = CoverLetterService.format_cover_letter_for_pdf(cover_letter.cover_letter_content)
+        latex_filepath = result["filepath"]
+        
+        # Compile the LaTeX to PDF
+        pdf_filepath = CustomResumeBuilder.compile_latex_to_pdf(latex_filepath)
+        
+        # Schedule cleanup for after the response is sent
+        background_tasks.add_task(CustomResumeBuilder.cleanup_latex_files, latex_filepath)
+        
+        # Return the PDF file
+        with open(pdf_filepath, "rb") as pdf_file:
+            pdf_content = pdf_file.read()
+            
+        return JSONResponse(
+            content={"pdf": pdf_content.hex()},
+            media_type="application/json"
+        )
+    
+    except Exception as e:
+        # Log the error
+        print(f"Error downloading cover letter: {str(e)}")
+        # Return an error message
+        raise HTTPException(
+            status_code=500, detail=f"Failed to download cover letter: {str(e)}"
+        )
+
+@router.post(
+    "/build-resume-with-cover-letter",
+    summary="Generate a custom resume with a cover letter",
+    description="Generate a custom resume with a cover letter based on job description"
+)
+async def build_resume_with_cover_letter(
+    request: ResumeWithCoverLetterRequest,
+    background_tasks: BackgroundTasks,
+    current_user: AuthenticatedUser,
+    db: Session = Depends(get_db),
+    resume_data: ResumeParseResponse = Depends(get_resume_data)
+):
+    """
+    Generate a custom resume with a cover letter based on the job description.
+    
+    Args:
+        request (ResumeWithCoverLetterRequest): The request containing job details
+        background_tasks (BackgroundTasks): Background tasks for file cleanup
+        current_user (AuthenticatedUser): The authenticated user
+        db (Session): Database session
+        resume_data (ResumeParseResponse): The parsed resume data
+    
+    Returns:
+        JSONResponse: Contains the combined PDF file
+    """
+    try:
+        # Generate the resume and cover letter
+        result = ResumeWithCoverLetterService.generate_resume_with_cover_letter(
+            resume_data=resume_data,
+            job_description=request.job_description,
+            company_name=request.company_name,
+            position_title=request.position_title,
+            hiring_manager_name=request.hiring_manager_name,
+            additional_details=request.additional_details
+        )
+        
+        resume_pdf_filepath = result["resume_pdf_filepath"]
+        cover_letter_pdf_filepath = result["cover_letter_pdf_filepath"]
+        cover_letter_content = result["cover_letter_content"]
+        
+        # Store the cover letter in the database
+        CoverLetterService.store_cover_letter_in_db(
+            cover_letter_content=cover_letter_content,
+            job_description=request.job_description,
+            current_user=current_user,
+            db=db
+        )
+        
+        # Combine the PDFs
+        combined_pdf_filepath = ResumeWithCoverLetterService.combine_pdfs(
+            resume_pdf_filepath=resume_pdf_filepath,
+            cover_letter_pdf_filepath=cover_letter_pdf_filepath
+        )
+        
+        # Schedule cleanup for after the response is sent
+        background_tasks.add_task(os.remove, resume_pdf_filepath)
+        background_tasks.add_task(os.remove, cover_letter_pdf_filepath)
+        
+        # Return the combined PDF file
+        with open(combined_pdf_filepath, "rb") as pdf_file:
+            pdf_content = pdf_file.read()
+        
+        # Schedule cleanup for the combined PDF
+        background_tasks.add_task(os.remove, combined_pdf_filepath)
+        
+        return JSONResponse(
+            content={"pdf": pdf_content.hex()},
+            media_type="application/json"
+        )
+    
+    except Exception as e:
+        # Log the error
+        print(f"Error building resume with cover letter: {str(e)}")
+        # Return an error message
+        raise HTTPException(
+            status_code=500, detail=f"Failed to build resume with cover letter: {str(e)}"
+        )
+
+@router.get(
+    "/cover-letters",
+    summary="Get all cover letters",
+    description="Get all cover letters for the authenticated user"
+)
+async def get_cover_letters(
+    current_user: AuthenticatedUser,
+    db: Session = Depends(get_db)
+):
+    """
+    Get all cover letters for the authenticated user.
+    
+    Args:
+        current_user (AuthenticatedUser): The authenticated user
+        db (Session): Database session
+    
+    Returns:
+        list: List of cover letters
+    """
+    try:
+        # Get all cover letters from the database
+        cover_letters = CoverLetterService.get_cover_letters_for_user(
+            current_user=current_user,
+            db=db
+        )
+        
+        # Format the response
+        response = []
+        for cover_letter in cover_letters:
+            response.append({
+                "id": str(cover_letter.id),
+                "content_preview": cover_letter.cover_letter_content[:100] + "...",
+                "created_at": cover_letter.created_at.isoformat(),
+                "job_description_preview": cover_letter.job_description[:100] + "..."
+            })
+        
+        return response
+    
+    except Exception as e:
+        # Log the error
+        print(f"Error getting cover letters: {str(e)}")
+        # Return an error message
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get cover letters: {str(e)}"
+        )

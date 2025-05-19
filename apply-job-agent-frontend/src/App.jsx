@@ -1,12 +1,9 @@
-import { useState } from 'react'
-import './App.css'
-
 import {Routes, Route } from 'react-router-dom'
 import ResumeProcessPage from './pages/ResumeProcessPage/ResumeProcessPage'
 import Layout from './pages/Layout'
+import ProfilePage from './pages/ProfilePage/ProfilePage'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
@@ -14,6 +11,7 @@ function App() {
 
         <Route path="/" element={<Layout/>}>
           <Route index element={<ResumeProcessPage/>}/>
+          <Route path="profile" element={<ProfilePage/>}/>
         </Route>
 
       </Routes>

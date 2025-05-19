@@ -27,7 +27,7 @@ And generate a tailored, clean, and professional LaTeX resume that aligns closel
 ---
 
 ### Final Output:
-{example_generated_output}
+{example_output}
 
 ### structured CV (Pydantic model):
 {resume_data}

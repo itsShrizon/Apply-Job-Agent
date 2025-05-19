@@ -62,7 +62,6 @@ pymupdf4llm==0.0.20
 PyPDF2==3.0.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
-python-jobspy==1.1.80
 python-multipart==0.0.20
 pytz==2025.2
 PyYAML==6.0.2
@@ -91,3 +90,4 @@ uvicorn==0.34.0
 wcwidth==0.2.13
 zstandard==0.23.0
 pylatex==1.4.1
+./custom-jobspy/JobSpy

@@ -79,3 +79,22 @@ class ErrorResponse(BaseModel):
     
 class CustomResumeRequest(BaseModel):
     job_description: str = Field(..., description="Job description for the resume")
+
+class CoverLetterRequest(BaseModel):
+    job_description: str = Field(..., description="Job description for the cover letter")
+    company_name: str = Field(..., description="Name of the company")
+    position_title: str = Field(..., description="Title of the position")
+    hiring_manager_name: Optional[str] = Field(None, description="Name of the hiring manager")
+    additional_details: Optional[str] = Field(None, description="Any additional details about the job or company")
+
+class CoverLetterResponse(BaseModel):
+    cover_letter_id: str = Field(..., description="Unique identifier for the cover letter")
+    content: str = Field(..., description="Cover letter content")
+    created_at: str = Field(..., description="Creation timestamp")
+
+class ResumeWithCoverLetterRequest(BaseModel):
+    job_description: str = Field(..., description="Job description for the resume and cover letter")
+    company_name: str = Field(..., description="Name of the company")
+    position_title: str = Field(..., description="Title of the position")
+    hiring_manager_name: Optional[str] = Field(None, description="Name of the hiring manager")
+    additional_details: Optional[str] = Field(None, description="Any additional details about the job or company")

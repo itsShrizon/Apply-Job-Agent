@@ -1,8 +1,10 @@
-import React from 'react';
-import { useModal } from '../../../Contexts/ModalContext'; // Update with correct path
+import React, { useState, useEffect } from 'react';
 import CVTemplateSelection from './CVTemplateSelection'; // Assuming you have a CVTemplateSelection component
 
 const AnalysisResults = ({ analysis, handleFindJobs, handleGoBack }) => {
+  const [animateIn, setAnimateIn] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
+  
   // Handle empty or missing skills array
   const displaySkills = Array.isArray(analysis?.skills) && analysis.skills.length > 0
     ? analysis.skills
@@ -17,14 +19,29 @@ const AnalysisResults = ({ analysis, handleFindJobs, handleGoBack }) => {
     if (analysis.education.includes('undefined')) return 'Education details not provided';
     return analysis.education;
   })();
-
-
-  const {openModal} = useModal(); // Assuming you have a modal context to handle modals
+  
+  // Animation effect on component mount
+  useEffect(() => {
+    setAnimateIn(true);
+    
+    // Sequentially highlight each section
+    const timer1 = setTimeout(() => setActiveSection('skills'), 300);
+    const timer2 = setTimeout(() => setActiveSection('summary'), 800);
+    const timer3 = setTimeout(() => setActiveSection('education'), 1300);
+    const timer4 = setTimeout(() => setActiveSection(null), 2000);
+    
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(timer4);
+    };
+  }, []);
   
   return (
     <div className="space-y-4">
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-lg border border-green-100 flex items-center">
-        <div className="h-8 w-8 rounded-full bg-gradient-to-r from-green-400 to-emerald-400 flex items-center justify-center text-white">
+      <div className={`bg-[#F7F3E9] p-3 rounded-lg border border-[#F46036]/20 flex items-center transition-all duration-500 transform ${animateIn ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+        <div className="h-8 w-8 rounded-full bg-[#F46036] flex items-center justify-center text-white shadow-md">
           <svg
             className="w-4 h-4"
             xmlns="http://www.w3.org/2000/svg"
@@ -41,19 +58,19 @@ const AnalysisResults = ({ analysis, handleFindJobs, handleGoBack }) => {
           </svg>
         </div>
         <div className="ml-3">
-          <h3 className="text-sm font-semibold text-gray-800">
+          <h3 className="text-sm font-semibold text-[#3E3E3E]">
             Analysis Complete
           </h3>
-          <p className="text-xs text-gray-600">
-            We've analyzed your resume and identified your key qualifications
+          <p className="text-xs text-[#3E3E3E]/70">
+            We've highlighted your unique talents and experience
           </p>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-gray-100">
-          <h3 className="text-sm font-semibold text-gray-800 flex items-center">
-            <span className="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center mr-2 text-indigo-600">
+      <div className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-500 transform ${animateIn ? 'translate-y-0 opacity-100 delay-100' : 'translate-y-4 opacity-0'}`}>
+        <div className={`p-4 border-b border-[#F7F3E9] transition-all duration-300 ${activeSection === 'skills' ? 'bg-[#F7F3E9]' : ''}`}>
+          <h3 className="text-sm font-semibold text-[#3E3E3E] flex items-center">
+            <span className="h-6 w-6 rounded-full bg-[#F7F3E9] flex items-center justify-center mr-2 text-[#F46036] shadow-sm">
               <svg
                 className="w-3 h-3"
                 xmlns="http://www.w3.org/2000/svg"
@@ -76,21 +93,22 @@ const AnalysisResults = ({ analysis, handleFindJobs, handleGoBack }) => {
               {displaySkills.map((skill, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs"
+                  className="px-2 py-1 bg-[#F7F3E9] text-[#3E3E3E] rounded-full text-xs border border-[#F46036]/20 shadow-sm transition-all duration-300 hover:bg-[#F46036]/10 hover:shadow"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   {skill}
                 </span>
               ))}
             </div>
           ) : (
-            <p className="mt-2 text-xs text-gray-500 italic">No skills listed in resume</p>
+            <p className="mt-2 text-xs text-[#3E3E3E]/70 italic">No skills listed in resume</p>
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
-          <div className="p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#F7F3E9]">
+          <div className={`p-4 transition-all duration-300 ${activeSection === 'summary' ? 'bg-[#F7F3E9]' : ''}`}>
             <div className="flex items-center">
-              <span className="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center mr-2 text-indigo-600">
+              <span className="h-6 w-6 rounded-full bg-[#F7F3E9] flex items-center justify-center mr-2 text-[#F46036] shadow-sm">
                 <svg
                   className="w-3 h-3"
                   xmlns="http://www.w3.org/2000/svg"
@@ -106,16 +124,16 @@ const AnalysisResults = ({ analysis, handleFindJobs, handleGoBack }) => {
                   />
                 </svg>
               </span>
-              <h3 className="text-sm font-semibold text-gray-800">Professional Summary</h3>
+              <h3 className="text-sm font-semibold text-[#3E3E3E]">Professional Story</h3>
             </div>
-            <p className="mt-2 pl-8 text-xs text-gray-600">
+            <p className="mt-2 pl-8 text-xs text-[#3E3E3E]/80 leading-relaxed">
               {displayExperience}
             </p>
           </div>
 
-          <div className="p-4">
+          <div className={`p-4 transition-all duration-300 ${activeSection === 'education' ? 'bg-[#F7F3E9]' : ''}`}>
             <div className="flex items-center">
-              <span className="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center mr-2 text-indigo-600">
+              <span className="h-6 w-6 rounded-full bg-[#F7F3E9] flex items-center justify-center mr-2 text-[#F46036] shadow-sm">
                 <svg
                   className="w-3 h-3"
                   xmlns="http://www.w3.org/2000/svg"
@@ -133,17 +151,17 @@ const AnalysisResults = ({ analysis, handleFindJobs, handleGoBack }) => {
                   />
                 </svg>
               </span>
-              <h3 className="text-sm font-semibold text-gray-800">Education</h3>
+              <h3 className="text-sm font-semibold text-[#3E3E3E]">Education</h3>
             </div>
-            <p className="mt-2 pl-8 text-xs text-gray-600">{formattedEducation}</p>
+            <p className="mt-2 pl-8 text-xs text-[#3E3E3E]/80 leading-relaxed">{formattedEducation}</p>
           </div>
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className={`flex justify-between flex-col sm:flex-row gap-2 transition-all duration-500 transform ${animateIn ? 'translate-y-0 opacity-100 delay-200' : 'translate-y-4 opacity-0'}`}>
         <button
           onClick={handleGoBack}
-          className="w-1/5 py-2 px-3 bg-white border border-indigo-200 text-indigo-600 font-medium text-xs rounded-lg hover:bg-indigo-50 transition"
+          className="sm:w-1/5 py-2 px-3 bg-white border border-[#F46036]/20 text-[#3E3E3E] font-medium text-xs rounded-lg hover:bg-[#F7F3E9] transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-md mb-2 sm:mb-0"
         >
           <div className="flex items-center justify-center">
             <svg
@@ -164,37 +182,12 @@ const AnalysisResults = ({ analysis, handleFindJobs, handleGoBack }) => {
           </div>
         </button>
 
-        {/* <button
-          className="w-2/5 py-2 px-3 bg-gradient-to-r from-teal-500 to-emerald-500 text-white font-medium text-xs rounded-lg hover:from-teal-600 hover:to-emerald-600 transition shadow-sm"
-        >
-          <div 
-          onClick={() => openModal(<CVTemplateSelection/>)} // Assuming you have a modal context to handle modals
-          className="flex items-center justify-center">
-            
-            <svg
-              className="w-3 h-3 mr-1"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            <span>Generate Smart CV</span>
-          </div>
-        </button> */}
-
         <button
           onClick={handleFindJobs}
-          className="w-4/5 py-2 px-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium text-xs rounded-lg hover:from-indigo-700 hover:to-purple-700 transition shadow-sm"
+          className="md:w-3/12 sm:w-4/5 py-2 px-3 bg-[#FF6B6B] text-white font-medium text-xs rounded-lg hover:bg-[#F46036] transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
         >
           <div className="flex items-center justify-center">
-            <span>Find Jobs</span>
+            <span>Find Opportunities</span>
             <svg
               className="w-3 h-3 ml-1"
               xmlns="http://www.w3.org/2000/svg"

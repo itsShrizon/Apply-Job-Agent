@@ -9,11 +9,10 @@ import { ModalProvider } from './Contexts/ModalContext.jsx'
 import { AuthProvider } from './Contexts/AuthContext.jsx'
 import { CustomResumeProvider } from './Contexts/CustomResumeContext.jsx'
 
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
     
+    <BrowserRouter>
     <AuthProvider>
       <CustomResumeProvider>
       <ProcessProvider>

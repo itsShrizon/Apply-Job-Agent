@@ -3,11 +3,8 @@ import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
 import { useModal } from '../../Contexts/ModalContext';
 import Register from '../AuthComponents/Rergister';
 import LoginCelebration from '../ResumeProcessPage/Components/LoginCelebration';
-import loginImage from '../../assets/loginImage.jpg'; // Adjust the path to your image
+import loginImage from '../../assets/loginimage.jpg';
 import { useAuth } from '../../Contexts/AuthContext';
-// Note: We'll use a background image instead of importing the logo
-// Import your background image here
-// import backgroundImage from '../../assets/background.jpg'; // Use your actual image path
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -15,7 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { openModal, setIsLoggedIn, closeModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const {signIn}=useAuth()
 
   const handleSubmit = async (e) => {
@@ -32,7 +29,7 @@ const Login = () => {
      
       // Call your auth context login function here
     } catch (err) {
-      setError('Login failed. Please check your credentials.');
+      setError('Login failed. Please check your credentials.',err);
       setLoading(false);
     }
   };
@@ -50,16 +47,16 @@ const Login = () => {
         ></div>
         
         {/* Gradient overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/70 to-indigo-900/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F46036]/70 to-[#FF6B6B]/80"></div>
         
         {/* Content */}
         <div className="relative h-full flex flex-col items-center justify-center p-6 z-10">
           <div className="text-center">
             <h2 className="text-white text-2xl font-bold mb-3">Welcome Back</h2>
-            <p className="text-blue-100 text-lg">Sign in to access your account and continue your journey.</p>
+            <p className="text-[#F7F3E9] text-lg">Sign in to access your account and continue your journey.</p>
             
             {/* Optional decorative element */}
-            <div className="mt-6 w-16 h-1 bg-white/50 mx-auto rounded-full"></div>
+            <div className="mt-6 w-16 h-1 bg-[#F7F3E9]/50 mx-auto rounded-full"></div>
           </div>
           
           {/* Optional: Add a subtle pattern overlay for more depth */}
@@ -70,8 +67,8 @@ const Login = () => {
       {/* Right side - Login Form */}
       <div className="w-full md:w-1/2 bg-white p-8">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Sign In</h1>
-          <p className="text-gray-600">Please enter your credentials</p>
+          <h1 className="text-2xl font-bold text-[#3E3E3E] mb-2">Sign In</h1>
+          <p className="text-[#3E3E3E]/70">Please enter your credentials</p>
         </div>
         
         {error && (
@@ -82,17 +79,17 @@ const Login = () => {
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="email">
+            <label className="block text-[#3E3E3E] text-sm font-medium mb-2" htmlFor="email">
               Email Address
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiMail size={18} className="text-gray-400" />
+                <FiMail size={18} className="text-[#3E3E3E]/50" />
               </div>
               <input
                 id="email"
                 type="email"
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-3 py-2 border border-[#F7F3E9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F46036]/50 focus:border-transparent bg-[#F7F3E9]/10"
                 placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -103,21 +100,21 @@ const Login = () => {
           
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-gray-700 text-sm font-medium" htmlFor="password">
+              <label className="block text-[#3E3E3E] text-sm font-medium" htmlFor="password">
                 Password
               </label>
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-800">
+              <a href="#" className="text-sm text-[#F46036] hover:text-[#FF6B6B]">
                 Forgot password?
               </a>
             </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiLock size={18} className="text-gray-400" />
+                <FiLock size={18} className="text-[#3E3E3E]/50" />
               </div>
               <input
                 id="password"
                 type="password"
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-3 py-2 border border-[#F7F3E9] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F46036]/50 focus:border-transparent bg-[#F7F3E9]/10"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -128,7 +125,7 @@ const Login = () => {
           
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
+            className="w-full bg-[#FF6B6B] hover:bg-[#F46036] text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
             disabled={loading}
           >
             {loading ? (
@@ -141,10 +138,10 @@ const Login = () => {
         </form>
         
         <div className="mt-6 text-center">
-          <p className="text-gray-600 text-sm">
+          <p className="text-[#3E3E3E]/70 text-sm">
             Don't have an account?{" "}
             <button 
-              className="text-blue-600 hover:text-blue-800 font-medium"
+              className="text-[#F46036] hover:text-[#FF6B6B] font-medium"
               onClick={()=>openModal(<Register/>)}
             >
               Create Account

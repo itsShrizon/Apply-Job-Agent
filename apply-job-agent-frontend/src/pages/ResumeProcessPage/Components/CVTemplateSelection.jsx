@@ -1,312 +1,281 @@
-// import React, { useState } from 'react';
-// import { useModal } from '../../../Contexts/ModalContext';
-// import cvtemplate from '../../../assets/cvT.png'
-// import SmartCVPreview from './SmartCVPreview';
-// import { useCustomResume } from '../../../Contexts/CustomResumeContext';
-
-// const CVTemplateSelection = ({job_description}) => {
-//   const { closeModal, openModal } = useModal();
-// //   const [selectedTemplate, setSelectedTemplate] = useState(0);
-//   const [imageLoaded, setImageLoaded] = useState(false);
-//   const [imageError, setImageError] = useState(false);
-//   console.log("job:",job_description)
-//   const { 
-//     selectedTemplate, 
-//     setSelectedTemplate, 
-//     generateCV, 
-//     isGenerating 
-//   } = useCustomResume()
-//   // Template data - for now just one template, but structured to add more later
-//   const templates = [
-//     {
-//       id: 1,
-//       name: "Professional Modern",
-//       description: "Clean layout with modern typography, optimized for ATS systems and professional roles.",
-//       imageSrc:cvtemplate, // Path to your image
-//       features: [
-//         "ATS-friendly format ensures your resume passes automated screening",
-//         "Balanced white space for improved readability",
-//         "Strategic skill placement to highlight your core competencies",
-//         "Optimized section ordering based on industry standards"
-//       ]
-//     }
-//     // More templates can be added here in the future
-//   ];
-
-//   const handleTemplateSelect = (templateId) => {
-//     setSelectedTemplate(templateId);
-//   };
-
-//   console.log(selectedTemplate)
-//   const handleNext = async () => {
-//     if (!selectedTemplate) {
-//       // Show an error or notification that template selection is required
-//       return;
-//     }
-    
-//     // Open the modal first so user sees the loading state
-//     openModal(<SmartCVPreview />);
-    
-//     try {
-//       // This will trigger the loading state in the preview component
-//       await generateCV(job_description);
-      
-//       // Modal is already open with SmartCVPreview, which will 
-//       // show the generated CV once it's ready
-//     } catch (error) {
-//       // Error handling is managed in the context and displayed in the preview
-//       console.error('Failed to generate resume:', error);
-//     }
-//   };
-
-//   // CSS Mockup component to use as fallback
-//   const TemplateMockup = () => (
-//     <div className="w-full h-full p-2">
-//       <div className="bg-white h-full flex flex-col border border-gray-100 overflow-hidden">
-//         {/* Header section */}
-//         <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-2 border-b border-indigo-100">
-//           <div className="h-4 bg-indigo-600 rounded w-2/3 mb-1"></div>
-//           <div className="h-3 bg-indigo-400 rounded w-1/2"></div>
-//         </div>
-        
-//         {/* Contact info */}
-//         <div className="flex justify-center py-1 border-b border-gray-200">
-//           <div className="h-2 bg-gray-300 rounded w-4/5"></div>
-//         </div>
-        
-//         {/* Content sections */}
-//         <div className="p-2 space-y-2 flex-grow">
-//           {/* Experience section */}
-//           <div>
-//             <div className="h-3 bg-indigo-500 rounded w-1/3 mb-1"></div>
-//             <div className="space-y-1 mb-2">
-//               <div className="h-2 bg-gray-200 rounded w-full"></div>
-//               <div className="h-2 bg-gray-200 rounded w-5/6"></div>
-//               <div className="h-2 bg-gray-200 rounded w-4/5"></div>
-//             </div>
-//             <div className="space-y-1">
-//               <div className="h-2 bg-gray-200 rounded w-full"></div>
-//               <div className="h-2 bg-gray-200 rounded w-3/4"></div>
-//             </div>
-//           </div>
-          
-//           {/* Skills section */}
-//           <div>
-//             <div className="h-3 bg-indigo-500 rounded w-1/4 mb-1"></div>
-//             <div className="flex flex-wrap gap-1">
-//               <div className="h-3 w-12 bg-indigo-100 rounded-full"></div>
-//               <div className="h-3 w-16 bg-indigo-100 rounded-full"></div>
-//               <div className="h-3 w-10 bg-indigo-100 rounded-full"></div>
-//               <div className="h-3 w-14 bg-indigo-100 rounded-full"></div>
-//               <div className="h-3 w-12 bg-indigo-100 rounded-full"></div>
-//             </div>
-//           </div>
-          
-//           {/* Education section */}
-//           <div>
-//             <div className="h-3 bg-indigo-500 rounded w-1/3 mb-1"></div>
-//             <div className="space-y-1">
-//               <div className="h-2 bg-gray-200 rounded w-5/6"></div>
-//               <div className="h-2 bg-gray-200 rounded w-2/3"></div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-
-//   return (
-//     <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl w-full mx-auto">
-//       {/* Header */}
-//       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
-//         <div className="flex justify-between items-center">
-//           <h3 className="text-white font-semibold text-lg">Choose Your Custom Resume Template</h3>
-//           {/* <button 
-//             onClick={closeModal}
-//             className="text-white hover:text-gray-200 focus:outline-none"
-//           >
-//             <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-//             </svg>
-//           </button> */}
-//         </div>
-//       </div>
-      
-//       <div className="p-6">
-//         {/* Introduction */}
-//         <div className="mb-6">
-//           <h4 className="text-gray-800 font-medium text-lg mb-2">Select a Professional Template</h4>
-//           <p className="text-sm text-gray-600">
-//             Choose from our professionally designed resume templates to showcase your qualifications effectively. 
-//             This template is crafted to highlight your skills and experience in a clear, recruiter-friendly format. 
-//             Select this template to create a polished resume that stands out to employers.
-//           </p>
-//         </div>
-        
-//         {/* Template selection area */}
-//         <div className="grid grid-cols-1 gap-6">
-//           {templates.map((template) => (
-//             <div 
-//               key={template.id}
-//               className={`border-2 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
-//                 selectedTemplate === template.id ? 'border-indigo-500 shadow-md' : 'border-gray-200 hover:border-indigo-300'
-//               }`}
-//               onClick={() => handleTemplateSelect(template.id)}
-//             >
-//               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-//                 {/* Template preview image - left side */}
-//                 <div className="bg-gray-100 p-3">
-//                   <div className="bg-white shadow rounded overflow-hidden h-full flex items-center justify-center">
-//                     {/* Try to load the actual image, with fallback to CSS mockup */}
-//                     {!imageError ? (
-//                       <img 
-//                         src={template.imageSrc} 
-//                         alt={`${template.name} Template Preview`}
-//                         className={`w-full h-auto object-contain ${imageLoaded ? 'block' : 'hidden'}`}
-//                         onLoad={() => setImageLoaded(true)}
-//                         onError={() => setImageError(true)}
-//                       />
-//                     ) : null}
-                    
-//                     {/* Show CSS mockup if image fails to load or while loading */}
-//                     {(!imageLoaded || imageError) && <TemplateMockup />}
-//                   </div>
-//                 </div>
-                
-//                 {/* Template details - right side */}
-//                 <div className="p-4 md:col-span-2">
-//                   <div className="flex items-center justify-between mb-2">
-//                     <h5 className="font-medium text-gray-800">{template.name}</h5>
-//                     {selectedTemplate === template.id && (
-//                       <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">
-//                         Selected
-//                       </span>
-//                     )}
-//                   </div>
-//                   <p className="text-sm text-gray-600 mb-3">{template.description}</p>
-                  
-//                   <h6 className="text-xs font-medium text-gray-700 mb-1">Why this template works for you:</h6>
-//                   <ul className="text-xs text-gray-600 space-y-1">
-//                     {template.features.map((feature, index) => (
-//                       <li key={index} className="flex items-start space-x-2">
-//                         <svg className="w-3.5 h-3.5 text-indigo-500 mt-0.5 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-//                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-//                         </svg>
-//                         <span>{feature}</span>
-//                       </li>
-//                     ))}
-//                   </ul>
-//                 </div>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-      
-//       {/* Footer with action buttons */}
-//       <div className="bg-gray-50 px-6 py-4 flex justify-between">
-//         <button 
-//           onClick={closeModal}
-//           className="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition"
-//         >
-//           Cancel
-//         </button>
-        
-//         <button 
-//           onClick={handleNext}
-//           disabled={!selectedTemplate || isGenerating}
-//           className={`px-6 py-2.5 rounded-lg transition text-sm font-medium ${
-//             !selectedTemplate || isGenerating
-//               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-//               : 'bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:from-teal-600 hover:to-emerald-600 shadow-sm'
-//           }`}
-//         >
-//           {isGenerating ? (
-//             <div className="flex items-center">
-//               <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-//                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-//                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-//               </svg>
-//               Processing...
-//             </div>
-//           ) : (
-//             'Generate Resume'
-//           )}
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CVTemplateSelection;
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useModal } from '../../../Contexts/ModalContext';
 import cvtemplate from '../../../assets/cvT.png';
 import SmartCVPreview from './SmartCVPreview';
 import { useCustomResume } from '../../../Contexts/CustomResumeContext';
+import { activeTheme as theme } from '../../../Themes/theme';
 
-const CVTemplateSelection = ({ job_description }) => {
+const CVTemplateSelection = ({ job_description, position_title, company_name }) => {
   const { closeModal, openModal } = useModal();
   const { 
     selectedTemplate, 
     setSelectedTemplate, 
     generateCV, 
-    isGenerating 
+    generateCoverLetter,
+    generateCombinedDocument,
+    isGenerating,
+    isGeneratingCoverLetter,
+    isGeneratingCombined,
+    error,
+    clearGeneratedCV,
+    clearGeneratedCoverLetter,
+    clearCombinedDocument,
+    downloadCoverLetter
   } = useCustomResume();
+  
+  // Local state for error handling
+  const [localError, setLocalError] = useState(null);
+  // State for tracking selected document type
+  const [documentType, setDocumentType] = useState('resume'); // 'resume', 'cover', or 'combined'
+  // State for cover letter inputs
+  const [coverLetterData, setCoverLetterData] = useState({
+    company_name: '',
+    position_title: '',
+    job_description: '',
+    hiring_manager: ''
+  });
 
   const handleTemplateSelect = () => {
     setSelectedTemplate(1);
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCoverLetterData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Use props to pre-populate form fields
+  React.useEffect(() => {
+    setCoverLetterData(prev => ({
+      ...prev,
+      job_description: job_description || prev.job_description,
+      position_title: position_title || prev.position_title,
+      company_name: company_name || prev.company_name
+    }));
+  }, [job_description, position_title, company_name]);
+
   const handleNext = async () => {
-    openModal(<SmartCVPreview />);
+    // Clear any previous errors
+    setLocalError(null);
     
     try {
-      await generateCV(job_description);
+      let result;
+      
+      // Clear any previously generated documents
+      clearGeneratedCV();
+      clearGeneratedCoverLetter();
+      clearCombinedDocument();
+      
+      if (documentType === 'resume') {
+        // Generate only CV
+        result = await generateCV(job_description);
+      } 
+      else if (documentType === 'cover') {
+        // Generate only cover letter
+        result = await generateCoverLetter(coverLetterData);
+        // Download the cover letter
+        if (result && result.cover_letter_id) {
+          result = await downloadCoverLetter(result.cover_letter_id);
+        }
+      } 
+      else if (documentType === 'combined') {
+        // First, generate CV
+        // const cvResult = await generateCV(job_description);
+        
+        // Then, generate cover letter
+        const coverLetterResult = await generateCoverLetter(coverLetterData);
+        
+        // Finally, generate combined document
+        if (coverLetterResult && coverLetterResult.cover_letter_id) {
+          result = await generateCombinedDocument({
+            cover_letter_id: coverLetterResult.cover_letter_id,
+            job_description
+          });
+        }
+      }
+      
+      // Open the preview modal if document generation was successful
+      if (result && result.pdfUrl) {
+        openModal(<SmartCVPreview documentType={documentType} />);
+      }
     } catch (error) {
-      console.error('Failed to generate resume:', error);
+      console.error('Failed to generate document:', error);
+      setLocalError(error.message || 'Failed to generate document. Please try again.');
     }
   };
 
+  // Determine if form is ready to submit
+  const isCoverLetterFormValid = () => {
+    if (documentType === 'cover' || documentType === 'combined') {
+      return coverLetterData.company_name && 
+             coverLetterData.position_title && 
+             coverLetterData.job_description;
+    }
+    return true;
+  };
+
+  // Check if any generation process is in progress
+  const isProcessing = isGenerating || isGeneratingCoverLetter || isGeneratingCombined;
+
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-xs mx-auto">
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-md mx-auto">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-3">
-        <h3 className="text-white font-semibold text-center">Resume Template</h3>
+      <div style={{ backgroundColor: theme.primary, borderBottomColor: theme.accent }} className="px-4 py-3 border-b">
+        <h3 style={{ color: theme.text }} className="font-semibold text-center">Document Generation</h3>
       </div>
       
-      {/* Just the template image */}
-      <div 
-        className={`cursor-pointer ${selectedTemplate === 1 ? 'ring-2 ring-indigo-500' : ''}`}
-        onClick={handleTemplateSelect}
-      >
-        <img 
-          src={cvtemplate} 
-          alt="Resume Template" 
-          className="w-full h-auto"
-        />
+      {/* Document Type Selection */}
+      <div className="p-4 border-b">
+        <label className="block text-sm font-medium text-gray-700 mb-2">What would you like to generate?</label>
+        <div className="flex space-x-4">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="documentType"
+              value="resume"
+              checked={documentType === 'resume'}
+              onChange={() => setDocumentType('resume')}
+              className="h-4 w-4 text-blue-600"
+            />
+            <span className="ml-2 text-sm text-gray-700">Resume Only</span>
+          </label>
+          
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="documentType"
+              value="cover"
+              checked={documentType === 'cover'}
+              onChange={() => setDocumentType('cover')}
+              className="h-4 w-4 text-blue-600"
+            />
+            <span className="ml-2 text-sm text-gray-700">Cover Letter Only</span>
+          </label>
+          
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="documentType"
+              value="combined"
+              checked={documentType === 'combined'}
+              onChange={() => setDocumentType('combined')}
+              className="h-4 w-4 text-blue-600"
+            />
+            <span className="ml-2 text-sm text-gray-700">Both</span>
+          </label>
+        </div>
       </div>
+      
+      {/* Resume Template (show only for resume or combined) */}
+      {(documentType === 'resume' || documentType === 'combined') && (
+        <div className="p-4 border-b">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Resume Template</label>
+          <div 
+            className={`cursor-pointer ${selectedTemplate === 1 ? 'ring-2' : ''}`}
+            style={{ ringColor: selectedTemplate === 1 ? theme.accent : 'transparent' }}
+            onClick={handleTemplateSelect}
+          >
+            <img 
+              src={cvtemplate} 
+              alt="Resume Template" 
+              className="w-full h-auto"
+            />
+          </div>
+        </div>
+      )}
+      
+      {/* Cover Letter Form (show only for cover letter or combined) */}
+      {(documentType === 'cover' || documentType === 'combined') && (
+        <div className="p-4 border-b">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Cover Letter Information</h4>
+          
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">Company Name *</label>
+              <input
+                type="text"
+                name="company_name"
+                value={coverLetterData.company_name}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                placeholder="Enter company name"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">Job Title *</label>
+              <input
+                type="text"
+                name="position_title"
+                value={coverLetterData.position_title}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                placeholder="Enter job title"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">Hiring Manager (Optional)</label>
+              <input
+                type="text"
+                name="hiring_manager"
+                value={coverLetterData.hiring_manager}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                placeholder="Enter hiring manager's name if known"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">Job Description *</label>
+              <textarea
+                name="job_description"
+                value={coverLetterData.job_description}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                rows="4"
+                placeholder="Paste job description here"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Error message */}
+      {(localError || error) && (
+        <div className="px-4 py-2 bg-red-50 text-red-700 text-sm">
+          {localError || error}
+        </div>
+      )}
       
       {/* Footer with action buttons */}
-      <div className="bg-gray-50 px-4 py-3 flex justify-between">
+      <div style={{ backgroundColor: theme.primary }} className="px-4 py-3 flex justify-between">
         <button 
           onClick={closeModal}
-          className="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition"
+          style={{ color: theme.text, borderColor: theme.accent }}
+          className="px-4 py-2 bg-white border rounded text-sm hover:bg-gray-50 transition"
         >
           Cancel
         </button>
         
         <button 
           onClick={handleNext}
-          disabled={isGenerating}
+          disabled={isProcessing || !isCoverLetterFormValid()}
+          style={{ 
+            backgroundColor: isProcessing || !isCoverLetterFormValid() ? theme.disabledBg : theme.cta,
+            color: isProcessing || !isCoverLetterFormValid() ? theme.disabledText : '#FFFFFF'
+          }}
           className={`px-5 py-2 rounded transition text-sm font-medium ${
-            isGenerating
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:opacity-90'
+            isProcessing || !isCoverLetterFormValid() ? 'cursor-not-allowed' : 'hover:opacity-90'
           }`}
         >
-          {isGenerating ? (
+          {isProcessing ? (
             <div className="flex items-center">
               <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

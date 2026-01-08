@@ -17,6 +17,7 @@ And generate a tailored, clean, and professional LaTeX resume that aligns closel
 - Keep the formatting and structure aligned with the LaTeX template provided.
 - Skills and awards should be formatted as simple lists.
 - Return only the final LaTeX code - do not include any explanations.
+- **CRITICAL**: You MUST escape all special LaTeX characters in the content (e.g. `&` $\rightarrow$ `\&`, `%` $\rightarrow$ `\%`, `$` $\rightarrow$ `\$`, `#` $\rightarrow$ `\#`, `_` $\rightarrow$ `\_`). Failure to do this will cause the resume generation to fail.
 
 ---
 

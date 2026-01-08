@@ -1,7 +1,7 @@
 import os
 from langchain_openai import ChatOpenAI
 
-def get_llm_model(model_name="gpt-4o", temperature=0):
+def get_llm_model(model_name="gpt-4.1", temperature=0):
     """
     Creates and returns a ChatOpenAI model instance.
     

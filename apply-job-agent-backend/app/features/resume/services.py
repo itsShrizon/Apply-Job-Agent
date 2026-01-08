@@ -148,12 +148,38 @@ class CustomResumeBuilder:
             # Create the chain
             chain = prompt | gpt_model
 
+            # Helper to escape LaTeX special characters
+            def escape_latex_chars(obj):
+                if isinstance(obj, str):
+                    chars = {
+                        '&': r'\&',
+                        '%': r'\%',
+                        '$': r'\$',
+                        '#': r'\#',
+                        '_': r'\_',
+                        '{': r'\{',
+                        '}': r'\}',
+                        '~': r'\textasciitilde{}',
+                        '^': r'\textasciicircum{}',
+                        '\\': r'\textbackslash{}',
+                    }
+                    pattern = re.compile('|'.join(re.escape(key) for key in chars.keys()))
+                    return pattern.sub(lambda x: chars[x.group()], obj)
+                elif isinstance(obj, list):
+                    return [escape_latex_chars(item) for item in obj]
+                elif isinstance(obj, dict):
+                    return {key: escape_latex_chars(value) for key, value in obj.items()}
+                return obj
+
+            # Sanitize resume data
+            sanitized_resume_data = escape_latex_chars(resume_data.dict())
+
             # Get response
             response = chain.invoke(
                 {
                     "latex_resume_template": latex_template,
                     "example_generated_output": examples["output"],
-                    "resume_data": resume_data,
+                    "resume_data": sanitized_resume_data,
                     "job_description": job_description,
                 }
             )

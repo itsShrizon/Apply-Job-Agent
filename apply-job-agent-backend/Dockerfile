@@ -6,6 +6,8 @@ WORKDIR /app
 
 # Install TeX Live with required packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
     texlive-latex-base \
     texlive-latex-recommended \
     texlive-latex-extra \

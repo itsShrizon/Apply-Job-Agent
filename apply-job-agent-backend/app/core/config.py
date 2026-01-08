@@ -52,15 +52,21 @@ class Settings(BaseSettings):
         ]
 
     SENTRY_DSN: HttpUrl | None = None
-    POSTGRES_SERVER: str
+    SENTRY_DSN: HttpUrl | None = None
+    POSTGRES_SERVER: str | None = None
     POSTGRES_PORT: int = 5432
-    POSTGRES_USER: str
+    POSTGRES_USER: str | None = None
     POSTGRES_PASSWORD: str = ""
     POSTGRES_DB: str = ""
+    
+    DATABASE_URL: PostgresDsn | None = None
 
     @computed_field  # type: ignore[prop-decorator]
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+        if self.DATABASE_URL:
+            return self.DATABASE_URL
+            
         return MultiHostUrl.build(
             scheme="postgresql+psycopg2",
             username=self.POSTGRES_USER,

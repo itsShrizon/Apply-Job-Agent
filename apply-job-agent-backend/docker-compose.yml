@@ -5,8 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
+    # Use host network mode to avoid connectivity issues (IPv6/DNS) inside Docker
+    network_mode: "host"
+    # ports:
+    #   - "8000:8000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - SECRET_KEY=${SECRET_KEY:-your_secret_key}

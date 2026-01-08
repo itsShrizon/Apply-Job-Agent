@@ -3,7 +3,7 @@ import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
 import { useModal } from '../../Contexts/ModalContext';
 import Register from '../AuthComponents/Rergister';
 import LoginCelebration from '../ResumeProcessPage/Components/LoginCelebration';
-import loginImage from '../../assets/loginImage.jpg'; // Adjust the path to your image
+import loginImage from '../../assets/loginimage.jpg'; // Adjust the path to your image
 import { useAuth } from '../../Contexts/AuthContext';
 // Note: We'll use a background image instead of importing the logo
 // Import your background image here
@@ -16,20 +16,20 @@ const Login = () => {
   const [error, setError] = useState(null);
 
   const { openModal, setIsLoggedIn, closeModal } = useModal();
-  const {signIn}=useAuth()
+  const { signIn } = useAuth()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       // Simulate auth process
       await signIn(email, password);
-      openModal(<LoginCelebration/>)
+      openModal(<LoginCelebration />)
       await new Promise(resolve => setTimeout(resolve, 2000));
       closeModal()
       setLoading(false);
-     
+
       // Call your auth context login function here
     } catch (err) {
       setError('Login failed. Please check your credentials.');
@@ -42,44 +42,44 @@ const Login = () => {
       {/* Left side - Background Image with Overlay */}
       <div className="hidden md:block md:w-1/2 relative">
         {/* Background image with CSS - using a placeholder URL, replace with your actual image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ 
+          style={{
             backgroundImage: `url('${loginImage}')`, // Replace with your image path or URL
           }}
         ></div>
-        
+
         {/* Gradient overlay for better text readability */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/70 to-indigo-900/80"></div>
-        
+
         {/* Content */}
         <div className="relative h-full flex flex-col items-center justify-center p-6 z-10">
           <div className="text-center">
             <h2 className="text-white text-2xl font-bold mb-3">Welcome Back</h2>
             <p className="text-blue-100 text-lg">Sign in to access your account and continue your journey.</p>
-            
+
             {/* Optional decorative element */}
             <div className="mt-6 w-16 h-1 bg-white/50 mx-auto rounded-full"></div>
           </div>
-          
+
           {/* Optional: Add a subtle pattern overlay for more depth */}
           <div className="absolute inset-0 bg-pattern opacity-10 mix-blend-overlay"></div>
         </div>
       </div>
-      
+
       {/* Right side - Login Form */}
       <div className="w-full md:w-1/2 bg-white p-8">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Sign In</h1>
           <p className="text-gray-600">Please enter your credentials</p>
         </div>
-        
+
         {error && (
           <div className="mb-4 bg-red-100 p-3 rounded text-red-700 text-sm">
             {error}
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="email">
@@ -100,7 +100,7 @@ const Login = () => {
               />
             </div>
           </div>
-          
+
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
               <label className="block text-gray-700 text-sm font-medium" htmlFor="password">
@@ -125,7 +125,7 @@ const Login = () => {
               />
             </div>
           </div>
-          
+
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center"
@@ -139,13 +139,13 @@ const Login = () => {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
-        
+
         <div className="mt-6 text-center">
           <p className="text-gray-600 text-sm">
             Don't have an account?{" "}
-            <button 
+            <button
               className="text-blue-600 hover:text-blue-800 font-medium"
-              onClick={()=>openModal(<Register/>)}
+              onClick={() => openModal(<Register />)}
             >
               Create Account
             </button>

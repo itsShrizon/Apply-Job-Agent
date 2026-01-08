@@ -7,11 +7,13 @@ WORKDIR /app
 # Install TeX Live with required packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    git \
     libpq-dev \
     texlive-latex-base \
     texlive-latex-recommended \
     texlive-latex-extra \
     texlive-fonts-recommended \
+    texlive-fonts-extra \
     # The packages from texlive.packages
     texlive-publishers \  
     # caption is part of texlive-latex-recommended
